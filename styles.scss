@@ -1,0 +1,24 @@
+:root {
+  --primary: #4a6bff;
+  --secondary: #3dd1cf;
+  --accent: #ff7b7b;
+  --text: #2c3e50;
+  --bg: #f5f7fa;
+  --card-bg: #ffffff;
+  --nav-bg: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --input-bg: #f0f4f8;
+  --border-color: #dee2e6;
+}
+body.dark {
+  --primary: #5c7cff;
+  --secondary: #4ee3e0;
+  --accent: #ff8e8e;
+  --text: #ecf0f1;
+  --bg: #1a1f36;
+  --card-bg: #242c48;
+  --nav-bg: #242c48;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --input-bg: #2d3958;
+  --border-color: #444;
+}

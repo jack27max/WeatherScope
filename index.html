@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherScope</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="weatherscope logo.png">
+</head>
+<body>
+    <div class="container">
+        <!-- Bootstrap Navbar with Toggle -->
+<nav class="navbar bg-body-tertiary">
+  <div class="logo">
+    <a class="navbar-brand" href="#">
+      <img src="weatherscope logo.png" alt="Bootstrap" width="40px" style="margin-right: -20px;">
+    </a>
+    <div class="logo-text">Weather<span>Scope</span></div>
+  </div>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="modeToggle">
+        <label class="form-check-label" id="themeMode" for="modeToggle">Dark Mode</label>
+    </div>
+</nav>
+        <!-- Top Navigation -->
+        <div class="top-nav">
+            <div class="city-tabs">
+                <div class="city-tab active" data-city="new delhi">New Delhi</div>
+                <div class="city-tab" data-city="mumbai">Mumbai</div>
+                <div class="city-tab" data-city="bangalore">Bangalore</div>
+                <div class="city-tab" data-city="kolkata">Kolkata</div>
+                <div class="city-tab" data-city="chennai">Chennai</div>
+                <div class="city-tab" data-city="gwalior">Gwalior</div>
+                <div class="city-tab" data-city="hyderabad">Hyderabad</div>
+                <div class="city-tab" data-city="pune">Pune</div>
+                <div class="city-tab" data-city="jaipur">Jaipur</div>
+                <div class="city-tab" data-city="ahmedabad">Ahmedabad</div>
+                <div class="city-tab" data-city="morena">Morena</div>
+                <div class="city-tab" data-city="banmore">Banmore</div>
+                <div id="tab2" class="city-tab2"></div>
+            </div>
+             <div class="city-search">
+                <input type="text" id="city-input" placeholder="Search city...">
+                <button id="search-btn"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+        <!-- Weather Dashboard -->
+        <div class="dashboard">
+            <!-- Current Weather -->
+            <div class="current-weather">
+                <div class="city-name">New Delhi</div>
+                <div class="date-time">Monday, June 10, 2023 | 03:45 PM</div>
+                <div class="weather-icon">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="temperature">32°C</div>
+                <div class="weather-condition">Sunny</div>
+            </div>
+            <!-- Weather Details -->
+            <div class="weather-details">
+                <h2 class="section-title">Weather Details</h2>
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <div class="detail-icon">
+                            <i class="fas fa-temperature-high"></i>
+                        </div>
+                        <div class="detail-value">32°C</div>
+                        <div class="detail-name">Temperature</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div class="humidity">65%</div>
+                        <div class="detail-name">Humidity</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-icon">
+                            <i class="fas fa-wind"></i>
+                        </div>
+                        <div class="wind-speed">12 km/h</div>
+                        <div class="detail-name">Wind Speed</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="visibility">10 km</div>
+                        <div class="detail-name">Visibility</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     <!-- Forecast Section -->
+        <div class="forecast-section">
+            <h2 class="forecast-title">5-Day Forecast</h2>
+            <div class="forecast-container">
+                <div class="forecast-cards" id="forecast-cards">
+                    <!-- Forecast cards will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>        
+        <!-- Feedback Form -->
+<div class="feedback">
+    <h2 class="section-title">We'd Love Your Feedback</h2>
+    <!-- Success Message (Initially Hidden) -->
+    <div id="thankyou_message" class="alert alert-success alert-dismissible fade show" style="display: none;">
+        <i class="fas fa-check-circle"></i>
+        <strong>Thank you!</strong> Your feedback has been submitted successfully.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<!-- Hidden iframe (Google form redirect ko block karne ke liye) -->
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+<!-- Error -->
+<div id="error_message" style="display:none; margin:30px auto; max-width:500px; padding:20px; background:#fdeaea; border:1px solid #f5b2b2; border-radius:12px; text-align:center; color:#c62828; font-family:sans-serif; box-shadow:0 4px 12px rgba(0,0,0,0.15); transition:opacity 0.6s ease; opacity:0;">
+  <h2 style="margin-bottom:10px; font-size:22px;">Oops!</h2>
+  <p style="margin:0; font-size:16px;">Sorry, maybe a connection problem. Please try again.</p>
+  <button style="margin-top:12px; padding:8px 16px; border:none; background:#c62828; color:#fff; border-radius:6px; cursor:pointer; font-size:14px;" onclick="retryForm()">Retry</button>
+</div>
+<!-- Feedback Form -->
+<form class="row g-3 feedback-form" id="feedbackForm"
+  action="https://docs.google.com/forms/d/e/1FAIpQLSdGjfNIzdsjfwvuxmnT9sfIKzzHnM3RhOAPHn_gQUlmHO7opA/formResponse"
+  method="POST" target="hidden_iframe" onsubmit="handleSubmit(event)">
+  <!-- First name -->
+  <div class="col-md-4">
+    <label for="fname" class="form-label">First name</label>
+    <input type="text" class="form-control" id="fname" name="entry.987917589" required>
+  </div>
+  <!-- Last name -->
+  <div class="col-md-4">
+    <label for="lname" class="form-label">Last name</label>
+    <input type="text" class="form-control" id="lname" name="entry.1683547520" required>
+  </div>
+  <!-- Email -->
+  <div class="col-md-4">
+    <label for="email" class="form-label">E-mail</label>
+    <input type="email" class="form-control" id="email" name="entry.275494196" required>
+  </div>
+  <!-- City -->
+  <div class="col-md-6">
+    <label for="city" class="form-label">City</label>
+    <input type="text" class="form-control" id="city" name="entry.791783152" required>
+  </div>
+  <!-- State -->
+  <div class="col-md-3">
+    <label for="state" class="form-label">State</label>
+    <select class="form-select" id="validationDefault04" name="entry.1717913293" required>
+      <option selected disabled value="">Choose...</option>
+      <option value="Andhra Pradesh">Andhra Pradesh</option>
+      <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+      <option value="Assam">Assam</option>
+      <option value="Bihar">Bihar</option>
+      <option value="Chhattisgarh">Chhattisgarh</option>
+      <option value="Goa">Goa</option>
+      <option value="Gujarat">Gujarat</option>
+      <option value="Haryana">Haryana</option>
+      <option value="Himachal Pradesh">Himachal Pradesh</option>
+      <option value="Jharkhand">Jharkhand</option>
+      <option value="Karnataka">Karnataka</option>
+      <option value="Kerala">Kerala</option>
+      <option value="Madhya Pradesh">Madhya Pradesh</option>
+      <option value="Maharashtra">Maharashtra</option>
+      <option value="Manipur">Manipur</option>
+      <option value="Meghalaya">Meghalaya</option>
+      <option value="Mizoram">Mizoram</option>
+      <option value="Nagaland">Nagaland</option>
+      <option value="Odisha">Odisha</option>
+      <option value="Punjab">Punjab</option>
+      <option value="Rajasthan">Rajasthan</option>
+      <option value="Sikkim">Sikkim</option>
+      <option value="Tamil Nadu">Tamil Nadu</option>
+      <option value="Telangana">Telangana</option>
+      <option value="Tripura">Tripura</option>
+      <option value="Uttar Pradesh">Uttar Pradesh</option>
+      <option value="Uttarakhand">Uttarakhand</option>
+      <option value="West Bengal">West Bengal</option>
+      <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+      <option value="Chandigarh">Chandigarh</option>
+      <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+      <option value="Daman and Diu">Daman and Diu</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Lakshadweep">Lakshadweep</option>
+      <option value="Puducherry">Puducherry</option>
+    </select>
+  </div>
+  <!-- Feedback -->
+  <div class="col-md-7 full-width">
+    <label for="feedback" class="form-label">Feedback & Suggestion</label>
+    <textarea class="form-control" id="feedback" name="entry.1129029618" required></textarea>
+  </div>
+  <!-- Submit -->
+  <div class="col-12 center-submit">
+    <button class="btn btn-primary" type="submit">Submit</button>
+  </div>
+</form>
+</div>
+        <!-- Footer -->
+            <footer>
+    <div class="footer-container">
+        <div class="footer-logo">
+            <div class="logo">
+                <a class="navbar-brand">
+                 <img src="weatherscope logo.png" alt="Bootstrap" width="40px">
+                </a>
+                <div class="logo-text">Weather<span>Scope</span></div>
+            </div>
+            <p class="footer-about">We create beautiful and functional web solutions tailored to your needs.</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/jatin.choudhari.2711"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/_jackpool_/"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.linkedin.com/in/jatin-choudhary-6291ba279/"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://github.com/jack27max"><i class="fab fa-github"></i></a>
+            </div>
+        </div>  
+        <div class="footer-tech">
+            <h3 class="footer-heading">Technologies</h3>
+            <ul class="tech-list">
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>JavaScript</li>
+                <li>SCSS</li>
+                <li>Bootstrap</li>
+                <li>Weather API</li>
+                <li>VS Code</li>
+                
+            </ul>
+        </div>
+        <div class="footer-contact">
+            <h3 class="footer-heading">Contact Info</h3>
+            <ul class="contact-info">
+                <li><i class="fas fa-map-marker-alt"></i> Gwalio, (M.P.) 474001.</li>
+                <li><i class="fas fa-phone"></i> +91 62659 61503</li>
+                <li><i class="fas fa-envelope"></i> choudharijatin396@gmail.com</li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright">
+        <p>&copy; 2025 WeatherScope. All rights reserved. | Designed with <i class="fas fa-heart" style="color: #e74c3c;"></i> by Jatin Choudhari</p>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // DOM Elements
+        const toggle = document.getElementById("modeToggle");
+        const body = document.body;
+        const cityInput = document.getElementById('city-input');
+        const searchBtn = document.getElementById('search-btn');
+        const cityTabs = document.querySelectorAll('.city-tab');
+        const cityTabs2 = document.querySelectorAll('.city-tab2');
+        const cityName = document.querySelector('.city-name');
+        const dateTime = document.querySelector('.date-time');
+        const weatherIcon = document.querySelector('.weather-icon i');
+        const temperature = document.querySelector('.temperature');
+        const weatherCondition = document.querySelector('.weather-condition');
+        const detailValues = document.querySelectorAll('.detail-value');
+        const themeText = document.querySelector('.theme-toggle label');
+        const humidity = document.querySelector('.humidity');
+        const windSpeed = document.querySelector('.wind-speed');
+        const visibility = document.querySelector('.visibility');
+        const forecastContainer = document.getElementById('forecast-cards');
+        const checkbox = document.getElementById("modeToggle");
+  const label = document.getElementById("themeMode");
+  checkbox.addEventListener("change", () => {
+    body.classList.toggle("dark-mode");
+    if (checkbox.checked) {
+      label.textContent = "Light Mode";  
+    } else {
+      label.textContent = "Dark Mode";
+    }
+  });
+        // Theme toggle
+        toggle.addEventListener("change", () => {
+            body.classList.toggle("dark");
+            themeText.textContent = body.classList.contains("dark") ? "Light Mode" : "Dark Mode";       
+            // Save theme preference to localStorage
+            localStorage.setItem('theme', body.classList.contains("dark") ? 'dark' : 'light');
+        });
+        // Check for saved theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark');
+            toggle.checked = true;
+            themeText.textContent = "Light Mode";
+        }
+        // Weather API call
+        async function updateWeather(city) {
+            const apiKey = "d76564bedd1bfe2c25384ac3b98464fd"; 
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+            const forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast';
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.cod === 200) {
+                    // Update main weather display
+                    cityName.textContent = data.name;
+                    temperature.textContent = `${data.main.temp}°C`;
+                    weatherCondition.textContent = data.weather[0].description;           
+                    // Fetch 5-day forecast
+                    const forecastResponse = await fetch(`${forecastUrl}?q=${city}&appid=${apiKey}&units=metric`);
+                    const forecastData = await forecastResponse.json();
+                    
+                    if (forecastData.cod === '200') {
+                        updateForecast(forecastData);
+                    }
+                    // Weather icon mapping
+                    const icon = data.weather[0].icon;
+                    if (icon.includes("01")) weatherIcon.className = "fas fa-sun";
+                    else if (icon.includes("02")) weatherIcon.className = "fas fa-cloud-sun";
+                    else if (icon.includes("03") || icon.includes("04")) weatherIcon.className = "fas fa-cloud";
+                    else if (icon.includes("09") || icon.includes("10")) weatherIcon.className = "fas fa-cloud-showers-heavy";
+                    else if (icon.includes("11")) weatherIcon.className = "fas fa-bolt";
+                    else if (icon.includes("13")) weatherIcon.className = "fas fa-snowflake";
+                    else if (icon.includes("50")) weatherIcon.className = "fas fa-smog";
+                    else weatherIcon.className = "fas fa-cloud-sun";
+                    // Update weather details
+                    detailValues[0].textContent = `${data.main.temp}°C`;
+                    humidity.textContent = `${data.main.humidity}%`;
+                    windSpeed.textContent = `${data.wind.speed} km/h`;
+                    visibility.textContent = `${(data.visibility / 1000).toFixed(1)} km`;
+                    // Date and time
+                    updateDateTime();
+                    // Active city tab update
+                    cityTabs.forEach(tab => {
+                        if (tab.dataset.city.toLowerCase() === city.toLowerCase()) {
+                            tab.classList.add('active');
+                        } else {
+                            tab.classList.remove('active');
+                        }
+                    });
+                    cityTabs2.forEach(tab => {
+                        if (tab.dataset.city.toLowerCase() === city.toLowerCase()) {
+                            tab.classList.add('active');
+                        } else {
+                            tab.classList.remove('active');
+                        }
+                    });
+                } else {
+                    alert("City not found!");
+                }
+            } catch (error) {
+                console.error("Error fetching weather:", error);
+            }
+        }
+        // Date and time update
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const date = now.toLocaleDateString('en-US', options);
+            const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            dateTime.textContent = `${date} | ${time}`;
+        }
+        // Event Listeners
+        searchBtn.addEventListener('click', () => {
+            if (cityInput.value.trim() !== '') {
+                updateWeather(cityInput.value.trim());
+            }
+        });
+        cityInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter' && cityInput.value.trim() !== '') {
+                updateWeather(cityInput.value.trim());
+            }
+        });
+        cityTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                updateWeather(tab.dataset.city);
+            });
+        });
+        cityTabs2.forEach(tab => {
+            tab.addEventListener('click', () => {
+                updateWeather(tab.dataset.city);
+            });
+        });
+       // Form validation and success message
+document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (this.checkValidity()) {
+        // Show success message
+        const successAlert = document.getElementById('feedback-success');
+        successAlert.style.display = 'block';
+        // Hide the message after 5 seconds
+        setTimeout(() => {
+            successAlert.style.display = 'none';
+        }, 5000);
+        // Reset the form
+        this.reset();
+        this.classList.remove('was-validated');
+    } else {
+        this.classList.add('was-validated');
+    }
+});
+// Close button functionality for the alert
+document.querySelector('.alert .btn-close').addEventListener('click', function() {
+    document.getElementById('feedback-success').style.display = 'none';
+});
+        // Initialize with default city
+        updateWeather('New Delhi');
+        setInterval(updateDateTime, 60000);
+    document.getElementById('tab2').style.display = 'none';
+// Cities ka array (isko tum apne 3000+ names se fill kar do)
+const tab2 = [
+  "Vishakhapatnam", "Tirupati", "Kakinada", "Amaravati", "Pasighat", "Guwahati", "Muzaffarpur", "Bhagalpur", "Biharsharif", "Patna", "Chandigarh", "Raipur", "Bilaspur", "NayaRaipur", "Diu", "Silvassa", "NewDelhi", "Panaji", "Gandhinagar", "Ahmedabad", "Surat", "Vadodara", "Rajkot", "Dahod", "Karnal", "Faridabad", "Dharamshala", "Shimla", "Srinagar", "Jammu", "Ranchi", "Mangaluru", "Belagavi", "Shivamogga", "HubballiDharwad", "Tumakuru", "Davanegere", "Bengaluru", "Kochi", "Trivendrum", "Kavaratti", "Bhopal", "Indore", "Jabalpur", "Gwalior", "Sagar", "Satna", "Ujjain", "NaviMumbai", "Nashik", "Thane", "Mumbai", "Amravati", "Solapur", "Nagpur", "Kalyan", "Aurangabad", "Pune", "Pimpri", "Imphal", "Shillong", "Aizawl", "Kohima", "Bhubaneshwar", "Raurkela", "Oulgaret", "Puducherry", "Ludhiana", "Jalandhar", "Amritsar", "Jaipur", "Udaipur", "Kota", "Ajmer", "Namchi", "Gangtok", "Tiruchirapalli", "Tirunelveli", "Dindigul", "Thanjavur", "Tiruppur", "Salem", "Vellore", "Coimbatore", "Madurai", "Erode", "Thoothukudi", "Chennai", "Greater", "Greater", "Karimnagar", "Agartala", "Moradabad", "Aligarh", "Saharanpur", "Bareilly", "Jhansi", "Kanpur", "Allahabad", "Lucknow", "Varanasi", "Ghaziabad", "Agra", "Rampur", "Dehradun", "Kolkata", "Bidhannagar", "Durgapur", "Haldia"
+];
+// Target div
+const container = document.getElementById("tab2");
+// Har city ke liye ek naya <div> banao
+cities.forEach(city => {
+  const div = document.createElement("div");
+  div.textContent = city;
+  container.appendChild(div);
+});
+  function showElement(id) {
+    var el = document.getElementById(id);
+    el.style.display = "block";
+    setTimeout(function() {
+      el.style.opacity = "1"; // fade-in effect
+    }, 10);
+  }
+  function handleSubmit(event) {
+    event.preventDefault(); // stop default submit
+    if (navigator.onLine) {
+      document.getElementById("feedbackForm").style.display = "none";
+      document.getElementById("error_message").style.display = "none";
+      showElement("thankyou_message");
+    } else {
+      document.getElementById("feedbackForm").style.display = "none";
+      document.getElementById("thankyou_message").style.display = "none";
+      showElement("error_message");
+    }
+  }
+  function retryForm() {
+    document.getElementById("feedbackForm").style.display = "block";
+    document.getElementById("thankyou_message").style.display = "none";
+    document.getElementById("error_message").style.display = "none";
+    document.getElementById("thankyou_message").style.opacity = "0";
+    document.getElementById("error_message").style.opacity = "0";
+  }
+// Update forecast
+        function updateForecast(data) {
+            // Clear previous forecast
+            forecastContainer.innerHTML = '';
+            // We'll get one forecast per day (using the midday forecast)
+            const forecastData = data.list.filter(item => item.dt_txt.includes('12:00:00'));
+            forecastData.forEach(day => {
+                const date = new Date(day.dt * 1000);
+                const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const forecastCard = document.createElement('div');
+                forecastCard.className = 'forecast-card';             
+                forecastCard.innerHTML = `
+                    <div class="forecast-date">${dateStr}</div>
+                    <div class="forecast-day">${dayName}</div>
+                    <div class="forecast-icon">${getWeatherIcon(day.weather[0].id)}</div>
+                    <div class="forecast-temp">${Math.round(day.main.temp)}°C</div>
+                    <div class="forecast-desc">${day.weather[0].description}</div>
+                    <div class="forecast-details">
+                        <div class="forecast-detail-item">
+                            <span class="detail-label">Humidity:</span>
+                            <span class="detail-value">${day.main.humidity}%</span>
+                        </div>
+                        <div class="forecast-detail-item">
+                            <span class="detail-label">Wind:</span>
+                            <span class="detail-value">${day.wind.speed} m/s</span>
+                        </div>
+                        <div class="forecast-detail-item">
+                            <span class="detail-label">Pressure:</span>
+                            <span class="detail-value">${day.main.pressure} hPa</span>
+                        </div>
+                    </div>
+                `;
+                forecastContainer.appendChild(forecastCard);
+            });
+        }
+        // Function to get weather icon based on condition code
+        function getWeatherIcon(conditionCode) {
+            if (conditionCode >= 200 && conditionCode < 300) {
+                return '<i class="fas fa-bolt"></i>';
+            } else if (conditionCode >= 300 && conditionCode < 400) {
+                return '<i class="fas fa-cloud-rain"></i>';
+            } else if (conditionCode >= 500 && conditionCode < 600) {
+                return '<i class="fas fa-cloud-showers-heavy"></i>';
+            } else if (conditionCode >= 600 && conditionCode < 700) {
+                return '<i class="fas fa-snowflake"></i>';
+            } else if (conditionCode >= 700 && conditionCode < 800) {
+                return '<i class="fas fa-smog"></i>';
+            } else if (conditionCode === 800) {
+                return '<i class="fas fa-sun"></i>';
+            } else if (conditionCode > 800) {
+                return '<i class="fas fa-cloud"></i>';
+            } else {
+                return '<i class="fas fa-cloud"></i>';
+            }
+        }  
+        // Date and time update
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const date = now.toLocaleDateString('en-US', options);
+            const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            dateTime.textContent = `${date} | ${time}`;
+        }
+        // Event Listeners
+        searchBtn.addEventListener('click', () => {
+            if (cityInput.value.trim() !== '') {
+                updateWeather(cityInput.value.trim());
+            }
+        });
+        cityInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter' && cityInput.value.trim() !== '') {
+                updateWeather(cityInput.value.trim());
+            }
+        });
+        cityTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                updateWeather(tab.dataset.city);
+            });
+        });
+        function handleSubmit(e) {
+        e.preventDefault();
+        let form = document.getElementById("feedbackForm");
+        let thankyou = document.getElementById("thankyou_message");
+        let error = document.getElementById("error_message");
+        if (form.checkValidity()) {
+            // Google Form ko submit karo
+            form.submit();
+            // Thank you turant show karo
+            thankyou.style.display = "block";
+            error.style.display = "none";
+            // 2 sec baad form reset
+            setTimeout(() => {
+            form.reset();
+            }, 2000);
+            // 5 sec baad thank you hide
+            setTimeout(() => {
+            thankyou.style.display = "none";
+            }, 5000);
+        } else {
+            // Agar form invalid hai toh browser ka validation dikhayega
+            form.reportValidity();
+        }
+}
+
+
+
+    </script>
+</body>
+</html>
